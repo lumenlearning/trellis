@@ -5,6 +5,13 @@
   with_dict: "{{ wordpress_sites }}"
   become: true
   become_user: "{{ web_user }}"
+- name: Network activate Candela Utility
+  command: wp plugin activate candela-utility --network
+  args:
+    chdir: "{{ www_root }}/{{ item.key }}/{{ item.value.current_path | default('current') }}/"
+  with_dict: "{{ wordpress_sites }}"
+  become: true
+  become_user: "{{ web_user }}"
 - name: Network activate Redis Cache
   command: wp plugin activate redis-cache --network
   args:
@@ -29,11 +36,8 @@
 - name: Enable default themes
   include_tasks: enable-theme.yml
   with_items:
-    - pressbooks-aldine
+    - pressbooks-publisher
     - pressbooks-book
-    - pressbooks-clarke
-    - pressbooks-donham
-    - pressbooks-jacobs
   loop_control:
     loop_var: theme
 - name: Allow new book registration
